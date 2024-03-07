@@ -1,15 +1,32 @@
 import express, { Request, Response } from 'express';
-import dotenv from 'dotenv'; 
+import { RowDataPacket } from 'mysql2';
+import connection from '../connection';
 
-// Get address for MySQL server
-dotenv.config();
-const databaseURL = process.env.DATABASE_URL;
+interface ParsedBlock extends RowDataPacket {
+	last_parsed_block: number
+}
+
 
 const router = express.Router();
 
-router.get('/', (req: Request, res: Response) => {
-	console.log("Database: " + databaseURL);
-	res.send('test');
+router.get('/', async (req: Request, res: Response) => {
+	let response = await selectParsedBlock();
+	res.send(response);
 });
 
 export default router;
+
+function selectParsedBlock(): Promise<ParsedBlock>{
+	return new Promise((resolve, reject) => {
+		connection.query<ParsedBlock[]>(
+			"SELECT * FROM parsed_block",
+			(err, res) => {
+				if (err) {
+					reject(err);
+				}
+				else {
+					resolve(res?.[0]);
+				}
+			});
+	});
+}

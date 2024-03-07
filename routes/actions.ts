@@ -34,9 +34,8 @@ router.get('/', async (req: Request, res: Response) => {
 		query += `WHERE tick = "${tick}"`
 	}
 
-	let x = await selectActions(query);
-
-	res.send(x);
+	let response: Action[] = await selectActions(query);
+	res.send(response);
 });
 
 export default router;
