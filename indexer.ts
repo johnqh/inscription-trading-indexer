@@ -1,6 +1,10 @@
 import axios from "axios"; // used to make HTTP requests from node. js or XMLHttpRequests from the browser
+import { BitcoinInscriptionService } from "./inscription";
 
 let apiPrefix = "https://blockstream.info/api"; // testing purposes using mainnet, but should be tstnet
+
+// Class to Get Insctiptions
+const service = new BitcoinInscriptionService();
 
 // Get a Block's Hash
 async function getBlockHash(block: number) {
@@ -37,6 +41,25 @@ async function getTransactions(txids: string[]) {
     const blockTxid = `${apiPrefix}/tx/${txids[i]}`;
     const response = await axios.get(blockTxid);
     arr.push(response.data);
+  }
+
+  console.log(arr);
+  return arr;
+}
+
+// Loop through a Block's Transactions and Looking for Inscriptions
+async function getInscriptions(txids: string[]) {
+  let arr: any[] = [];
+  // For testing purposes it is looping from 400 - 800, but should be 0 - txids.length
+  for (let i = 400; i < 410; i += 1) {
+    try {
+      console.log(i);
+      let inscription = await service.getInscription(txids[i]);
+      console.log(inscription);
+      arr.push(inscription);
+    } catch (e) {
+      continue;
+    }
   }
 
   console.log(arr);
@@ -82,6 +105,10 @@ async function main() {
     let txids = await getBlockTxids(hash);
     console.log(txids);
 
+    console.log("------------------BLOCK INSCRIPTIONS----------------");
+    // console.log(await getBlockTransaction(block));
+    console.log(await getInscriptions(txids));
+
     console.log("------------TX ID-----------");
     // b61b0172d95e266c18aea0c624db987e971a5d6d4ebc2aaed85da4642d635735
     // console.log(await response2.data.witness);
@@ -95,4 +122,5 @@ main();
 
 -------------------- References --------------------
 Blocksteam Esplora API - https://github.com/Blockstream/esplora/blob/master/API.md
+getInscription() - https://gist.github.com/ordinalOS/ae725bde82f9943a3b1e0911210765e8
 */
