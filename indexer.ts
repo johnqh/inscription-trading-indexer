@@ -92,11 +92,14 @@ async function main() {
   console.log("----------------BLOCK----------------");
   // console.log(blockData);
 
-  // let apiEndpoint = "/parsed_block";
-  // const APIresponse = await axios.get(apiEndpoint);
+  let apiEndpoint = serverURL + "/parsed_block";
+  const APIresponse = await axios.get(apiEndpoint);
+
+  let start = APIresponse.data.last_parsed_block + 1;
+  console.log(start);
 
   // 779832
-  let start = 831085; // testing purposes, should be API endpoint:
+  start = 831085; // testing purposes, should be API endpoint:
   let end = 831086; // testing purposes, number of blocks
 
   for (let block = start; block < end; block += 1) {
@@ -187,7 +190,7 @@ async function main() {
         last_parsed_block: block
       }
     );
-    // console.log(lastParsedBlockResponse.data);
+    console.log(lastParsedBlockResponse.data);
   }
 }
 
