@@ -6,10 +6,9 @@ interface ParsedBlock extends RowDataPacket {
 	last_parsed_block: number
 }
 
-
 const router = express.Router();
 
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (_: Request, res: Response) => {
 	let response: ParsedBlock[] = await selectParsedBlock();
 
 	if (response.length == 0) {
@@ -24,18 +23,19 @@ router.post('/', async (req: Request, res: Response) => {
 	const last_parsed_block = request.last_parsed_block;
 
 	if (!last_parsed_block) {
-		return res.status(400).send({error: 'Invalid input.'})
+		return res.status(400).send({ error: 'Invalid input.' })
 	}
 
 	await setParsedBlock(last_parsed_block);
 
 	res.send({
-		message: 'Last parsed block processed successfully.', last_parsed_block });
+		message: 'Last parsed block processed successfully.', last_parsed_block
+	});
 });
 
 export default router;
 
-function selectParsedBlock(): Promise<ParsedBlock[]>{
+function selectParsedBlock(): Promise<ParsedBlock[]> {
 	return new Promise((resolve, reject) => {
 		connection.query<ParsedBlock[]>(
 			"SELECT * FROM parsed_block",
@@ -54,11 +54,11 @@ async function setParsedBlock(new_val: number) {
 	const response: ParsedBlock[] = await selectParsedBlock();
 
 	if (response.length > 0) {
-        await connection.execute(
+		connection.execute(
 			`UPDATE parsed_block SET last_parsed_block = ?`,
 			[new_val]);
-    } else {
-        await connection.execute(
+	} else {
+		connection.execute(
 			`INSERT INTO parsed_block (last_parsed_block) VALUES (?)`,
 			[new_val]);
 	}
