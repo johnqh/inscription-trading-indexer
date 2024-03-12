@@ -20,6 +20,7 @@ const OP_PUSHDATA4 = 0x4e; // The next four bytes contain the number of bytes to
 const OP_ENDIF = 0x68; // Ends an if/else block.
 
 export interface ParsedInscription {
+  txId: string;
   contentType: string;
   contentString: string;
   fields: { [key: string]: Uint8Array };
@@ -236,6 +237,7 @@ export class BitcoinInscriptionService {
     const dataUri = `data:${contentType};base64,${base64Data}`;
 
     return {
+      txId,
       contentType,
       contentString,
       fields,
