@@ -24,7 +24,7 @@ router.post('/', async (req: Request, res: Response) => {
 	const last_parsed_block = request.last_parsed_block;
 
 	if (!last_parsed_block) {
-		return res.status(400).send({error: 'Invalid format'})
+		return res.status(400).send({error: 'Invalid input.'})
 	}
 
 	await setParsedBlock(last_parsed_block);
@@ -59,7 +59,7 @@ async function setParsedBlock(new_val: number) {
 			[new_val]);
     } else {
         await connection.execute(
-			`INSERT INTO parsed_block (last_parsed_block) VALUES ()`,
+			`INSERT INTO parsed_block (last_parsed_block) VALUES (?)`,
 			[new_val]);
 	}
 }
