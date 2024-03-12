@@ -24,7 +24,7 @@ router.get('/', async (req: Request, res: Response) => {
 	let conditions: String[] = [];
 	let params: String[] = [];
 
-	// multiple conditions require the AND keyword, making things difficult
+	// modify query based on request parameters
 	if (addr) {
 		conditions.push('address = ?');
 		params.push(`${addr}`);
@@ -44,13 +44,22 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 router.post('/', async (req: Request, res: Response) => {
-	const request: Action = req.body;
+	const action: Action = req.body;
 
-	await addAction(request);
+	// Validation
+	if (typeof action.tick !== 'string' ||
+		typeof action.address !== 'string' ||
+		typeof action.action !== 'number' ||
+		typeof action.amt !== 'number' ||
+		typeof action.block !== 'number' ||
+		(action.destination && typeof action.destination !== 'string')
+	) {
+		return res.status(400).send({ error: 'Invalid input.' });
+	}
 
-	// TODO return res.status(400).send({error: 'Invalid input.'})
+	await addAction(action);
 
-	res.send({ message: 'Action added', request })
+	res.send({ message: 'Action added successfully.', request: action });
 })
 
 export default router;
@@ -75,7 +84,7 @@ async function addAction(request: Action): Promise<void> {
 			[request.address, request.tick, request.action, request.amt, request.destination, request.block],
 			err => {
 				if (err) {
-					console.log(err);
+					console.error(err);
 				}
 			}
 		);
@@ -85,7 +94,7 @@ async function addAction(request: Action): Promise<void> {
 			[request.address, request.tick, request.action, request.amt, request.block],
 			err => {
 				if (err) {
-					console.log(err);
+					console.error(err);
 				}
 			}
 		);
