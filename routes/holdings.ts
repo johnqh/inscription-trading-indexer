@@ -45,8 +45,7 @@ router.post('/', async (req: Request, res: Response) => {
     if (typeof holding.tick !== 'string' ||
         typeof holding.address !== 'string' ||
         typeof holding.amt !== 'number' ||
-        typeof holding.updated_at_block !== 'number'
-    ) {
+        typeof holding.updated_at_block !== 'number') {
         return res.status(400).send({ error: 'Invalid input.' });
     }
 

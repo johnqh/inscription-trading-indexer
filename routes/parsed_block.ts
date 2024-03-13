@@ -8,7 +8,7 @@ interface ParsedBlock extends RowDataPacket {
 
 const router = express.Router();
 
-router.get('/', async (_: Request, res: Response) => {
+router.get('/', async (_req: Request, res: Response) => {
 	let response: ParsedBlock[] = await selectParsedBlock();
 
 	if (response.length == 0) {

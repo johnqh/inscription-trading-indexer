@@ -52,8 +52,7 @@ router.post('/', async (req: Request, res: Response) => {
 		typeof action.action !== 'number' ||
 		typeof action.amt !== 'number' ||
 		typeof action.block !== 'number' ||
-		(action.destination && typeof action.destination !== 'string')
-	) {
+		(action.destination && typeof action.destination !== 'string')) {
 		return res.status(400).send({ error: 'Invalid input.' });
 	}
 
