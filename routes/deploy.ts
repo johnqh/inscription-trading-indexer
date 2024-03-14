@@ -37,6 +37,8 @@ router.post('/', async (req: Request, res: Response) => {
     res.send({ message: 'Deploy token inserted successfully.', deploy });
 })
 
+export default router;
+
 function selectDeploy(): Promise<Deploy[]> {
     return new Promise((resolve, reject) => {
         connection.query<Deploy[]>(
