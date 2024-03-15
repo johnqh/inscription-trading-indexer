@@ -1,7 +1,7 @@
 {
   "name": "inscription-trading-indexer",
   "version": "1.0.0",
-  "description": "Indexer for SPL20 inscriptions",
+  "description": "Indexer for BRC-20 inscriptions",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -18,7 +18,11 @@
     "dotenv": "^16.4.5",
     "express": "^4.18.3",
     "mysql2": "^3.9.2",
+    "sleep": "^6.3.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@types/sleep": "^0.0.12"
   }
 }
