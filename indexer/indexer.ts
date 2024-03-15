@@ -56,7 +56,7 @@ async function getInscriptions(txids: string[]) {
   let arr: any[] = [];
 
   // For testing purposes it is looping from 400 - 800, but should be 0 - txids.length
-  for (let i = 2240; i < 2245; i += 1) {
+  for (let i = 0; i < txids.length; i += 1) {
     try {
       console.log(i);
       console.log(txids[i]);
@@ -75,7 +75,7 @@ async function getInscriptions(txids: string[]) {
 async function main() {
   const url = `${apiPrefix}/blocks/tip/height`;
   const response = await axios.get(url);
-  let numberOfBlocks = response.data;
+  let numberOfBlocks: number = response.data;
 
   console.log("-----------NUMBER OF BLOCKS------------");
   // console.log(numberOfBlocks);
@@ -95,12 +95,19 @@ async function main() {
   let apiEndpoint = serverURL + "/parsed_block";
   const APIresponse = await axios.get(apiEndpoint);
 
-  let start = APIresponse.data.last_parsed_block + 1;
+  let start: number = APIresponse.data.last_parsed_block;
   console.log(start);
 
+  if (!start) {
+    start = 779832;
+  } else {
+    start++;
+  }
+
   // 779832
-  start = 831085; // testing purposes, should be API endpoint:
-  let end = 831086; // testing purposes, number of blocks
+
+  //start = 831087; // testing purposes, should be API endpoint:
+  let end = numberOfBlocks; // testing purposes, number of blocks
 
   for (let block = start; block < end; block += 1) {
     console.log("------------------GET BLOCK'S HASH----------------");
@@ -151,17 +158,39 @@ async function main() {
           console.log(transaction.vin[0]);
           let sender = transaction.vin[0].prevout.scriptpubkey_address;
           let destination = transaction.vout[0].scriptpubkey_address;
+          let amt = parseInt(json.amt);
 
-          // Poopulating the Table
-          const response = await axios.post(serverURL + "/actions", {
+          // Populating the Table
+          const actionResponse = await axios.post(serverURL + "/actions", {
             address: sender || null,
             tick: json.tick || null,
             action: action,
-            amt: parseInt(json.amt) || null,
+            amt: amt || null,
             destination: destination || null,
             block: block,
           });
-            console.log(response.data);
+            console.log(actionResponse.data);
+
+          // update holding
+          let holding = await axios.get(serverURL + `/holdings?address=${sender}&tick=${json.tick}`);
+          let holdingData = holding.data;
+          let balance = 0;
+          if (holdingData.length != 0) {
+            balance = holdingData[0].amt;
+          }
+
+          if (action == 1) {
+            amt *= -1;
+          }
+
+          const holdingResponse = await axios.post(serverURL + "/holdings", {
+            address: sender || null,
+            tick: json.tick || null,
+            amt: balance + amt,
+            updated_at_block: block
+          });
+            console.log(holdingResponse.data);
+
         }
       } catch (e) {
         continue;

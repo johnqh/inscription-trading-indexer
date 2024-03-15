@@ -76,12 +76,18 @@ async function updateHolding(holding: Holding): Promise<void> {
         (err, res) => {
             if (err) {
                 console.error(err);
+                return;
             }
             // If no rows were affected by the update, insert a new record
             if (res.affectedRows === 0) {
                 connection.execute(
                     `INSERT INTO holdings (tick, address, amt, updated_at_block) VALUES (?, ?, ?, ?)`,
-                    [holding.tick, holding.address, holding.amt, holding.updated_at_block]
+                    [holding.tick, holding.address, holding.amt, holding.updated_at_block],
+                    err => {
+                        if (err) {
+                            console.error(err);
+                        }
+                    }
                 );
             }
         }
