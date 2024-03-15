@@ -116,7 +116,7 @@ export class BitcoinInscriptionService {
    * @returns A promise that resolves to the raw data.
    */
   static async getRawData(txId: string): Promise<Uint8Array> {
-    const url = `https://mempool.space/api/tx/${txId}`; // for testing purposes using mainnet, but should be testnet
+    const url = `https://mempool.space/testnet/api/tx/${txId}`;
     const response = await axios.get(url);
     const txWitness = response.data.vin[0].witness.join('');
     return BitcoinInscriptionService.hexStringToUint8Array(txWitness);
