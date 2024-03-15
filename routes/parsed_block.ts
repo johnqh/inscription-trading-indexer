@@ -38,7 +38,7 @@ export default router;
 function selectParsedBlock(): Promise<ParsedBlock[]> {
 	return new Promise((resolve, reject) => {
 		connection.query<ParsedBlock[]>(
-			"SELECT * FROM parsed_block",
+			"SELECT * FROM parsed_block LIMIT 1",
 			(err, res) => {
 				if (err) {
 					reject(err);

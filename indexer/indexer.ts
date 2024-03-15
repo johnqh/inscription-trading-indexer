@@ -52,22 +52,24 @@ async function main() {
   const response = await axios.get(url);
   let numberOfBlocks: number = response.data;
 
-  let apiEndpoint = serverURL + "/parsed_block";
-  const APIresponse = await axios.get(apiEndpoint);
+  // BRC-20's didn't start until March 2023, thus doesn't make sense to start
+  // from 0, so starting from the most recent block around that time
+  let start: number = 2420000;
 
-  let start: number = APIresponse.data.last_parsed_block;
-  console.log(start);
+  try {
+    let apiEndpoint = serverURL + "/parsed_block";
+    const APIresponse = await axios.get(apiEndpoint);
 
-  if (!start) {
-    start = 2420000; // BRC-20's didn't start until March 2023, thus doesn't make sense to start from 0, so starting from the most recent block around that time
-  } else {
-    start++;
+    start = APIresponse.data.last_parsed_block + 1;
+  } catch (err) {
+    console.error(err);
   }
 
   // Mainnet Block #: 779832 - Testing Mint
   // Mainnet Block #: 831085 - Testing Transfer
 
   const end = numberOfBlocks;
+  console.log("Scraping from " + start + " to " + end);
 
   for (let block = start; block < end; block += 1) {
     console.log("BLOCK HEIGHT: ", block);
