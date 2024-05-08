@@ -6,7 +6,11 @@ The indexer consists of a database, a REST API to interface with the database, a
 
 ## Installation and Running
 
-NodeJS is required to install and run the API and order matching.
+NodeJS is required to install and run the API and indexer.
+
+The indexer uses the API
+[in this GitHub repository](https://github.com/johnqh/inscription-trading-api).
+Please, install this first. Make sure you create the MySQL database as specified in that repository.
 
 From a clone or archive of the repository, run `npm install` to install the
 dependencies. 
