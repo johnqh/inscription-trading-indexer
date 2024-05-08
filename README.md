@@ -12,7 +12,7 @@ From a clone or archive of the repository, run `npm install` to install the
 dependencies. 
 
 A `.env` file will need to be made in order to store secrets, or else the API
-cannot communicate to the database or UniSat. The following variables are required:
+cannot communicate to the database. The following variable is required:
 
 ```
 DATABASE_URL=<url to mysql database>
